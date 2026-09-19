@@ -8,7 +8,7 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
 
 export const isNew = (publishedAt: string, now: number = Date.now()): boolean => {
   const age = now - new Date(publishedAt).getTime();
-  return age >= 0 && age < NEW_POST_WINDOW_MS;
+  return age >= 0 && age < NEW_POST_WINDOW_MS; // NaN (invalid date) => false
 };
 
 export const formatDate = (publishedAt: string): string => {
