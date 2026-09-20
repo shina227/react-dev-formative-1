@@ -1,8 +1,10 @@
+import styles from './Header.module.css';
+
 const Header = () => (
-  <header>
-    <a href="/">Dev Insights</a>
+  <header className={styles.header}>
+    <a href="/" className={styles.logo}>Dev Insights</a>
     <nav aria-label="Primary">
-      <a href="#new-post">New Post</a>
+      <a href="#new-post" className={styles.navLink}>New Post</a>
     </nav>
   </header>
 );
