@@ -7,7 +7,6 @@
   --color-border-strong: #c9c9c9;
   --color-accent: #0070f3;
   --color-accent-soft: #e6f0ff;
-  --color-featured-bg: #f5f8ff;
 
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -32,7 +31,6 @@
     --color-border-strong: #454545;
     --color-accent: #4c9aff;
     --color-accent-soft: #0f2744;
-    --color-featured-bg: #0d1b30;
   }
 }
 
