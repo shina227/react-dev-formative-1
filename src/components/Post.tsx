@@ -6,13 +6,15 @@ import styles from './Post.module.css';
 
 interface PostProps {
   post: PostType;
+  featured?: boolean;
 }
 
-const Post = ({ post }: PostProps) => {
+const Post = ({ post, featured = false }: PostProps) => {
   const { title, author, content, publishedAt } = post;
 
   return (
-    <article className={styles.card}>
+    <article className={featured ? `${styles.card} ${styles.featured}` : styles.card}>
+      {featured && <span className={styles.label}>Featured</span>}
       <h2 className={styles.title}>{title}</h2>
       <p className={styles.meta}>
         <span>{author}</span>
@@ -20,7 +22,7 @@ const Post = ({ post }: PostProps) => {
         <time dateTime={publishedAt}>{formatDate(publishedAt)}</time>
         {isNew(publishedAt) && <Badge>New!</Badge>}
       </p>
-      <p className={styles.preview}>{truncate(content)}</p>
+      <p className={styles.preview}>{truncate(content, featured ? 200 : 100)}</p>
     </article>
   );
 };

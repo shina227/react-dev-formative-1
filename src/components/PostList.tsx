@@ -11,8 +11,9 @@ const PostList = ({ posts }: PostListProps) => {
 
   return (
     <div className={styles.grid}>
-      {posts.map((post) => (
-        <Post key={post.id} post={post} />
+      {posts.map((post, index) => (
+        // Posts are newest-first, so the first one is featured
+        <Post key={post.id} post={post} featured={index === 0} />
       ))}
     </div>
   );

@@ -1,0 +1,7 @@
+.intro { margin-bottom: var(--space-5); }
+
+.lede {
+  margin-top: var(--space-2);
+  color: var(--color-muted);
+  font-size: 1.125rem;
+}
