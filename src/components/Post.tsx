@@ -4,6 +4,7 @@ import { formatDate, isNew } from '../utils/date';
 import { truncate } from '../utils/text';
 import Badge from './Badge';
 import styles from './Post.module.css';
+import withLogger from '../hoc/withLogger';
 
 interface PostProps {
   post: PostType;
@@ -28,8 +29,10 @@ const Post = ({ post, featured = false }: PostProps) => {
   );
 };
 
-// Skips re-render unless post or featured change
-const MemoizedPost = memo(Post);
-MemoizedPost.displayName = 'Memo(Post)';
+const LoggedPost = withLogger(Post);
+
+// memo outermost: withLogger's wrapper would otherwise re-render with the parent
+const MemoizedPost = memo(LoggedPost);
+MemoizedPost.displayName = `Memo(${LoggedPost.displayName})`; // Memo(withLogger(Post))
 
 export default MemoizedPost;
