@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import type { Post as PostType } from '../types/post';
 import { formatDate, isNew } from '../utils/date';
 import { truncate } from '../utils/text';
@@ -27,4 +28,8 @@ const Post = ({ post, featured = false }: PostProps) => {
   );
 };
 
-export default Post;
+// Skips re-render unless post or featured change
+const MemoizedPost = memo(Post);
+MemoizedPost.displayName = 'Memo(Post)';
+
+export default MemoizedPost;
