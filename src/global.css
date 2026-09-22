@@ -6,6 +6,7 @@
   --color-border: #eaeaea;
   --color-border-strong: #c9c9c9;
   --color-accent: #0070f3;
+  --color-accent-text: #0058cc;
 
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -30,6 +31,7 @@
     --color-border: #262626;
     --color-border-strong: #454545;
     --color-accent: #4c9aff;
+    --color-accent-text: #4c9aff;
   }
 }
 

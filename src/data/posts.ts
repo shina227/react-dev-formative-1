@@ -1,6 +1,6 @@
 import type { Post } from '../types/post';
 
-export const FEATURED_AUTHOR = 'Amara Okafor';
+const FEATURED_AUTHOR = 'Amara Okafor';
 
 const hoursAgo = (hours: number): string =>
   new Date(Date.now() - hours * 60 * 60 * 1000).toISOString();
