@@ -1,75 +1,72 @@
-# React + TypeScript + Vite
+# Dev Insights: Mini Blog
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Internal blog for sharing quick web-development tips. Built with **React 19 + TypeScript**, bundled with **Vite**.
 
-Currently, two official plugins are available:
+![Dev Insights desktop screenshot](docs/screenshot.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
 
-## React Compiler
+- `Header` (text logo, "New Post" link), `PostList`, `Post`, `App`
+- Fully typed `Post` interface, no `any`
+- Conditional styling: first post is **featured** (larger, full width); posts under 24 h old show a **New!** badge
+- `React.memo` + unique `key`s, and a `withLogger` HOC (mount/unmount logs)
+- Responsive grid, automatic dark mode
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech stack
 
-## Expanding the ESLint configuration
+**Vite**, React 19, TypeScript (strict), CSS Modules, styled-components, ESLint.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Structure
 
 ```
-
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+src/
+├── components/  Header, PostList, Post, Badge (+ .module.css)
+├── hoc/         withLogger.tsx
+├── data/        posts.ts (sample posts)
+├── types/       post.ts (Post interface)
+├── utils/       date.ts, text.ts
+├── App.tsx, global.css, main.tsx
+docs/screenshot.png
 ```
+
+## Run it
+
+Requires Node ≥ 20.19.
+
+```bash
+npm install       # install
+npm run dev       # dev server (Vite), http://localhost:5173
+npm run build     # type-check (tsc) + production build
+npm run preview   # serve the production build
+```
+
+**Testing:** there is no automated test suite. `npm run lint` and `npm run build` (strict `tsc`) must pass, then check manually:
+- **HOC:** console shows `[Post] mounted` per post. In dev, StrictMode intentionally mounts → unmounts → remounts once, so each is logged twice (dev only).
+- **memo:** React DevTools → Components shows `Memo(withLogger(Post))`. Add a temporary `useState` counter in `App`, record in the Profiler with *"Record why each component rendered"*, and click it: `Post` shows "Did not render".
+
+## Design decisions
+
+**Functional vs class.** `Post` is functional: it is a pure function of props with no state or lifecycle, so a class would add `this` and boilerplate, lose hooks, and need `PureComponent` for what `memo` does. The class pattern lives in `withLogger`, where `componentDidMount`/`componentWillUnmount` map directly onto the mount/unmount logging. Data is passed down as props (`App` → `PostList` → `Post`) from `data/posts.ts` so `PostList` stays reusable.
+
+**Styling.**
+- *CSS Modules* for most styling: scoped, zero runtime, real CSS, driven by variables in `global.css`.
+- *styled-components* for `Badge` only: a small self-contained element. Trade-off: the library is in maintenance mode and adds a runtime dependency, so this is a deliberate, scoped choice; `Badge` is trivial to migrate to a CSS Module.
+- Inline styles are not used: they can't express pseudo-classes, media queries or theme tokens.
+
+**Optimization.**
+- `React.memo` on `Post`: when a parent re-renders with unchanged props, unchanged posts skip rendering and re-truncating. It is the outermost wrapper, otherwise `withLogger`'s class wrapper would re-render with its parent.
+- `key={post.id}`: reconciliation matches items by identity, not position, so inserting a post mounts only the new one instead of remounting or mutating the wrong instances.
+- `withLogger` adds behaviour without changing `Post` and composes with `memo`, showing that wrapper order matters.
+
+## Challenges
+
+- **StrictMode double logs** looked like an HOC bug; traced to StrictMode's dev-only remount check rather than removing it.
+- **Verifying `memo`:** nothing re-renders without state, so I used a temporary counter and the Profiler.
+- **`truncate` edge cases:** cuts at a word boundary, keeps a word ending exactly at the limit, handles one very long word, and strips trailing punctuation before "…".
+- **Stale demo data:** sample dates are generated relative to load time so the "New!" badge always demonstrates correctly; dates format in UTC to avoid off-by-one days.
+- **HOC typing:** `Readonly<P>` isn't assignable to `P`; one commented cast avoids `any`.
+
+## Dependencies
+
+- **Runtime:** `react`, `react-dom`, `styled-components`
+- **Dev:** `vite`, `@vitejs/plugin-react`, `typescript`, `@types/react`, `@types/react-dom`, `@types/node`, `eslint`, `@eslint/js`, `typescript-eslint`, `eslint-plugin-react-hooks`, `eslint-plugin-react-refresh`, `globals`
