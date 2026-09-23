@@ -14,7 +14,7 @@ Internal blog for sharing quick web-development tips. Built with **React 19 + Ty
 
 ## Tech stack
 
-**Vite**, React 19, TypeScript (strict), CSS Modules, styled-components, ESLint.
+**Vite**, React 19, TypeScript, CSS Modules, styled-components, ESLint.
 
 ## Structure
 
