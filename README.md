@@ -29,15 +29,17 @@ src/
 docs/screenshot.png
 ```
 
-## Run it
+## How to Run
 
 Requires Node ≥ 20.19.
 
 ```bash
-npm install       # install
-npm run dev       # dev server (Vite), http://localhost:5173
-npm run build     # type-check (tsc) + production build
-npm run preview   # serve the production build
+git clone https://github.com/shina227/react-dev-formative-1.git
+cd react-dev-formative-1
+npm install
+npm run dev
+npm run build
+npm run preview
 ```
 
 **Testing:** there is no automated test suite. `npm run lint` and `npm run build` (strict `tsc`) must pass, then check manually:
